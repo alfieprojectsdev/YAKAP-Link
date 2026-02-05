@@ -8,15 +8,19 @@ import {
     TransactionSchema,
     type TransactionDocType,
     InventorySchema,
-    type InventoryDocType
+    type InventoryDocType,
+    PatientSchema,
+    type PatientDocType
 } from './schema';
 
 export type TransactionCollection = RxCollection<TransactionDocType>;
 export type InventoryCollection = RxCollection<InventoryDocType>;
+export type PatientCollection = RxCollection<PatientDocType>;
 
 export type MyDatabaseCollections = {
     transactions: TransactionCollection;
     inventory: InventoryCollection;
+    patients: PatientCollection;
 };
 
 export type MyDatabase = RxDatabase<MyDatabaseCollections>;
@@ -42,6 +46,9 @@ const createDatabase = async (): Promise<MyDatabase> => {
         },
         inventory: {
             schema: InventorySchema
+        },
+        patients: {
+            schema: PatientSchema
         }
     });
 

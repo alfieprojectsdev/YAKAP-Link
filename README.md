@@ -33,11 +33,9 @@ To prevent data corruption when multiple devices sync later, we do not store "To
 
 The server replays these logs to calculate the final state, ensuring mathematical consistency even if devices sync days apart.
 
-### 2.3 Tech Stack
-
 - **Frontend:** Astro (Shell) + React (Interactive UI).
-- **Local Database:** **RxDB** or **Dexie.js** (IndexedDB wrapper for robust local storage).
-- **Sync Engine:** **TanStack Query** (with `persist-client` for auto-retries).
+- **Local Database:** **RxDB** (IndexedDB wrapper for robust local storage & replication).
+- **Styling:** **TailwindCSS**.
 - **Backend:** Node.js / Python + PostgreSQL (NeonDB).
 
 ---
@@ -71,6 +69,13 @@ Thresholddynamic​=Thresholdbase​×(12Months to Expiry​)
 $$
 
 - **Scenario:** If stock expires in 3 months, the system lowers the "Hoarding Limit" drastically. If an RHU holds more than 22 days of stock, it is flagged as **"Critical Surplus"** and routed to a high-volume hospital.
+
+### 3.3 Offline Integrity: Protocol-20k-Guard (ADR-004)
+
+To prevent "Double-Dipping" of benefits (₱20k ABL) while offline, we verify eligibility locally:
+
+1.  **Home Court Rule:** Visitor patients (from other municipalities) are **blocked** from offline dispensing. They require an online verification.
+2.  **Staleness Cap:** If the device hasn't synced in >72 hours, dispensing is capped at a 7-day emergency supply to limit liability.
 
 ---
 

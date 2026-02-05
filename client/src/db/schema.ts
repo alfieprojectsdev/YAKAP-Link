@@ -39,6 +39,10 @@ export const TRANSACTION_SCHEMA_LITERAL = {
             type: 'string',
             enum: ['PENDING', 'SYNCED'],
             maxLength: 10
+        },
+        hash: {
+            type: 'string',
+            maxLength: 64
         }
     },
     required: ['id', 'type', 'sku', 'qty', 'timestamp', 'sync_status']
@@ -59,23 +63,6 @@ export const INVENTORY_SCHEMA_LITERAL = {
             type: 'string',
             maxLength: 50
         },
-        // We track stock broken down by batch for the Balancer, 
-        // but for the basic local store read model, we might just want to store the top-level info 
-        // or keep an array of batches. 
-        // For simplicity and matching the prompt's "InventoryItem" schema:
-        // Fields: `sku`, `batch_id`, `current_stock`, `expiry_date`.
-        // This implies one document per SKU-Batch combo? 
-        // Or "InventoryItem" is actually a specific batch record.
-        // Let's assume unique key is composite SKU+Batch? 
-        // RxDB composite keys are tricky, so we might use a generated ID like `SKU|BATCH`.
-        // Prompt says: "Create a schema for InventoryItem... Fields: sku, batch_id, current_stock, expiry_date."
-
-        // Let's use a composite ID as primary key: `${sku}|${batch_id}`
-        id: {
-            type: 'string',
-            maxLength: 100
-        },
-
         batch_id: {
             type: 'string',
             maxLength: 50
@@ -89,10 +76,41 @@ export const INVENTORY_SCHEMA_LITERAL = {
             maxLength: 20
         }
     },
-    required: ['id', 'sku', 'batch_id', 'current_stock']
+    required: ['sku', 'batch_id', 'current_stock']
 } as const;
 
 const schemaTypedInventory = toTypedRxJsonSchema(INVENTORY_SCHEMA_LITERAL);
 export type InventoryDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedInventory>;
 
 export const InventorySchema: RxJsonSchema<InventoryDocType> = INVENTORY_SCHEMA_LITERAL;
+
+// --- Patient (Reference Data) ---
+export const PATIENT_SCHEMA_LITERAL = {
+    version: 0,
+    primaryKey: 'id',
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            maxLength: 100
+        },
+        name: {
+            type: 'string',
+            maxLength: 100
+        },
+        municipality: {
+            type: 'string', // e.g. "Lubuagan", "Tabuk"
+            maxLength: 100
+        },
+        last_sync_date: {
+            type: 'string', // When we last saw this patient's data from server
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'name', 'municipality']
+} as const;
+
+const schemaTypedPatient = toTypedRxJsonSchema(PATIENT_SCHEMA_LITERAL);
+export type PatientDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedPatient>;
+
+export const PatientSchema: RxJsonSchema<PatientDocType> = PATIENT_SCHEMA_LITERAL;

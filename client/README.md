@@ -1,73 +1,39 @@
-# React + TypeScript + Vite
+# YAKAP-Link Client (Local-First)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend application for **YAKAP-Link**, built with **Vite + React + TypeScript**. It implements a "Local-First" architecture using **RxDB** to ensure 100% offline availability for rural health units.
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   **Zero-Latency Dispensing:** Writes to IndexedDB instantly; syncs in background.
+-   **Protocol-20k Guard:** Enforces "Home Court" rules to prevent double-dipping of benefits while offline.
+    -   *Visitor Block:* Cannot dispense to out-of-town patients without internet.
+    -   *Staleness Cap:* Limits dispensing if device hasn't synced in >72 hours.
+-   **Event Sourcing:** Calculates stock levels on-the-fly from a local ledger of transactions.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **Framework:** React 18 + Vite
+-   **Database:** RxDB (with Dexie/IndexedDB adapter)
+-   **State Management:** React Hooks + RxDB Observables
+-   **Styling:** CSS Modules / Vanilla CSS (Migrating to Tailwind)
 
-## Expanding the ESLint configuration
+## Developer Guide
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
+-   Node.js 18+
+-   npm 9+
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd client
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+-   `src/db/`: Database initialization and Schema definitions (`TransactionEvent`, `InventoryItem`, `Patient`).
+-   `src/hooks/`: Custom hooks like `useInventory` (The Projector).
+-   `src/utils/`: Business logic validation (`dispensingGuard.ts`).
+-   `src/components/`: UI Components (`TransactionForm`).
