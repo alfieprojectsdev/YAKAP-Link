@@ -48,6 +48,7 @@ export const TRANSACTION_SCHEMA_LITERAL = {
     required: ['id', 'type', 'sku', 'qty', 'timestamp', 'sync_status']
 } as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const schemaTypedTransaction = toTypedRxJsonSchema(TRANSACTION_SCHEMA_LITERAL);
 export type TransactionDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedTransaction>;
 
@@ -79,6 +80,7 @@ export const INVENTORY_SCHEMA_LITERAL = {
     required: ['sku', 'batch_id', 'current_stock']
 } as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const schemaTypedInventory = toTypedRxJsonSchema(INVENTORY_SCHEMA_LITERAL);
 export type InventoryDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedInventory>;
 
@@ -110,6 +112,7 @@ export const PATIENT_SCHEMA_LITERAL = {
     required: ['id', 'name', 'municipality']
 } as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const schemaTypedPatient = toTypedRxJsonSchema(PATIENT_SCHEMA_LITERAL);
 export type PatientDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedPatient>;
 

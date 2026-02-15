@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { checkDispensingEligibility, type LocalSettings, type GuardResult } from '../utils/dispensingGuard';
 import { type PatientDocType } from '../db/schema';
+import { config } from '../config';
 
 // Mock Patient Data (Since we don't have a patient picker UI yet)
 const MOCK_PATIENTS: (PatientDocType & { last_sync_date: string })[] = [
@@ -10,8 +11,8 @@ const MOCK_PATIENTS: (PatientDocType & { last_sync_date: string })[] = [
 ];
 
 const LOCAL_SETTINGS: LocalSettings = {
-    municipality: 'Tabuk',
-    isOnline: false // Simulating Offline Mode
+    municipality: config.municipality,
+    isOnline: config.isOnline
 };
 
 interface TransactionFormProps {
@@ -57,7 +58,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                     ))}
                 </select>
                 <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
-                    Context: Offline Mode. Home: Tabuk.
+                    Context: {LOCAL_SETTINGS.isOnline ? 'Online' : 'Offline'} Mode. Home: {LOCAL_SETTINGS.municipality}.
                 </div>
             </div>
 
