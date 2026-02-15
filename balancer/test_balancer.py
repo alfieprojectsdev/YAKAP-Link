@@ -1,6 +1,13 @@
 import pytest
 import datetime
-from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold
+from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold, INFINITE_DOI, calculate_bmi
+
+def test_infinite_doi_constant():
+    assert INFINITE_DOI == 9999.0
+
+def test_calculate_bmi_zero_burn():
+    item = InventoryItem("TEST", "B1", 100, datetime.date(2025, 12, 31), 0.0)
+    assert calculate_bmi(item) == INFINITE_DOI
 
 def test_dynamic_threshold():
     today = datetime.date(2025, 1, 1)
@@ -73,3 +80,21 @@ def test_balancer_expiry_push():
             assert o.source_clinic_id == "A"
             assert o.dest_clinic_id == "B"
     assert found
+
+def test_balancer_zero_burn_surplus():
+    today = datetime.date(2025, 1, 1)
+    # Item with zero burn rate should be considered surplus if it has stock
+    item = InventoryItem("TEST", "B1", 100, datetime.date(2025, 12, 31), 0.0)
+    clinic = Clinic("A", "Clinic A", (0,0), [item])
+
+    # Item with shortage
+    item_short = InventoryItem("TEST", "B2", 0, datetime.date(2025, 12, 31), 10.0)
+    clinic_short = Clinic("B", "Clinic B", (0,1), [item_short])
+
+    orders = detect_imbalances([clinic, clinic_short], today)
+    assert len(orders) > 0
+    assert orders[0].source_clinic_id == "A"
+    assert orders[0].sku == "TEST"
+    # Clinic A has 100 in stock, Clinic B needs (30*10) - 0 = 300.
+    # So it should transfer all 100.
+    assert orders[0].qty == 100
