@@ -2,9 +2,10 @@ import { useState } from 'react';
 import './App.css';
 import { useInventory } from './hooks/useInventory';
 import { TransactionForm } from './components/TransactionForm';
+import { SKUS, DEFAULT_SKU } from './constants';
 
 function App() {
-  const [selectedSku, setSelectedSku] = useState<string>('MED-AMOX-500');
+  const [selectedSku, setSelectedSku] = useState<string>(DEFAULT_SKU);
   const { currentStock, transactions, addTransaction } = useInventory(selectedSku);
 
   return (
@@ -23,9 +24,9 @@ function App() {
             onChange={e => setSelectedSku(e.target.value)}
             style={{ padding: '0.5rem', width: '100%', marginBottom: '2rem' }}
           >
-            <option value="MED-AMOX-500">Amoxicillin 500mg</option>
-            <option value="MED-PARA-500">Paracetamol 500mg</option>
-            <option value="MED-DOXY-100">Doxycycline 100mg</option>
+            {SKUS.map(sku => (
+              <option key={sku.value} value={sku.value}>{sku.label}</option>
+            ))}
           </select>
 
           <div style={{
