@@ -1,6 +1,32 @@
 import pytest
 import datetime
-from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold
+from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold, calculate_bmi
+
+def test_calculate_bmi():
+    # Helper to create item with specific stock and burn rate
+    def make_item(stock, burn_rate):
+        return InventoryItem(
+            sku="TEST",
+            batch_id="B1",
+            current_stock=stock,
+            expiry_date=datetime.date(2025, 12, 31),
+            daily_burn_rate=burn_rate
+        )
+
+    # 1. Normal case: 100 stock / 10 burn = 10 days
+    assert calculate_bmi(make_item(100, 10.0)) == 10.0
+
+    # 2. Zero burn rate -> Infinite DOI (9999.0)
+    assert calculate_bmi(make_item(100, 0.0)) == 9999.0
+
+    # 3. Negative burn rate -> Infinite DOI (9999.0)
+    assert calculate_bmi(make_item(100, -5.0)) == 9999.0
+
+    # 4. Zero stock, positive burn -> 0 DOI
+    assert calculate_bmi(make_item(0, 10.0)) == 0.0
+
+    # 5. Fractional burn rate: 10 stock / 0.5 burn = 20 days
+    assert calculate_bmi(make_item(10, 0.5)) == 20.0
 
 def test_dynamic_threshold():
     today = datetime.date(2025, 1, 1)
