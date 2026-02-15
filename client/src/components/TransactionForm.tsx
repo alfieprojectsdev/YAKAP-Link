@@ -24,17 +24,38 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
     const [batchId, setBatchId] = useState<string>('BATCH-001');
     const [selectedPatientId, setSelectedPatientId] = useState<string>('P1');
     const [guardResult, setGuardResult] = useState<GuardResult | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleDispense = () => {
-        const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
-        if (!patient) return;
+    const validateBatchId = (id: string): boolean => {
+        if (!id.trim()) {
+            setError('Batch ID cannot be empty');
+            return false;
+        }
+        if (id.length > 50) {
+            setError('Batch ID must be 50 characters or less');
+            return false;
+        }
+        setError(null);
+        return true;
+    };
 
-        // Run Protocol-20k Check
-        const result = checkDispensingEligibility(patient, LOCAL_SETTINGS);
-        setGuardResult(result);
+    const handleTransaction = (type: 'DISPENSE' | 'RECEIVE' | 'ADJUST') => {
+        if (!validateBatchId(batchId)) return;
 
-        if (result.allowed) {
-            onAdd('DISPENSE', qty, batchId);
+        if (type === 'DISPENSE') {
+            const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
+            if (!patient) return;
+
+            // Run Protocol-20k Check
+            const result = checkDispensingEligibility(patient, LOCAL_SETTINGS);
+            setGuardResult(result);
+
+            if (result.allowed) {
+                onAdd('DISPENSE', qty, batchId);
+                setQty(0);
+            }
+        } else {
+            onAdd(type, qty, batchId);
             setQty(0);
         }
     };
@@ -75,13 +96,24 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                 </div>
             )}
 
+            {error && (
+                <div style={{ padding: '0.5rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '4px', marginBottom: '1rem', border: '1px solid #f87171' }}>
+                    <strong>⚠️ Input Error</strong>
+                    <p style={{ margin: 0, fontSize: '0.9rem' }}>{error}</p>
+                </div>
+            )}
+
             <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                 <label>
                     Batch ID:
                     <input
                         value={batchId}
-                        onChange={e => setBatchId(e.target.value)}
+                        onChange={e => {
+                            setBatchId(e.target.value);
+                            if (error) setError(null);
+                        }}
                         style={{ marginLeft: '5px' }}
+                        maxLength={50}
                     />
                 </label>
                 <label>
@@ -97,19 +129,19 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
 
             <div style={{ display: 'flex', gap: '10px' }}>
                 <button
-                    onClick={handleDispense}
+                    onClick={() => handleTransaction('DISPENSE')}
                     style={{ backgroundColor: '#ffcccc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Dispense ( - )
                 </button>
                 <button
-                    onClick={() => { onAdd('RECEIVE', qty, batchId); setQty(0); }}
+                    onClick={() => handleTransaction('RECEIVE')}
                     style={{ backgroundColor: '#ccffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Receive ( + )
                 </button>
                 <button
-                    onClick={() => { onAdd('ADJUST', qty, batchId); setQty(0); }}
+                    onClick={() => handleTransaction('ADJUST')}
                     style={{ backgroundColor: '#ffffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Adjust ( +/- )
