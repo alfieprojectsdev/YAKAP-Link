@@ -24,6 +24,28 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
     const [batchId, setBatchId] = useState<string>('BATCH-001');
     const [selectedPatientId, setSelectedPatientId] = useState<string>('P1');
     const [guardResult, setGuardResult] = useState<GuardResult | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const validate = (type: 'DISPENSE' | 'RECEIVE' | 'ADJUST', val: number, limit: number | null = null): boolean => {
+        if (!Number.isFinite(val)) {
+            setError('Please enter a valid number.');
+            return false;
+        }
+        if (val === 0) {
+            setError('Quantity cannot be zero.');
+            return false;
+        }
+        if ((type === 'DISPENSE' || type === 'RECEIVE') && val < 0) {
+            setError(`${type.charAt(0) + type.slice(1).toLowerCase()} quantity must be positive.`);
+            return false;
+        }
+        if (type === 'DISPENSE' && limit !== null && val > limit) {
+            setError(`Dispensing exceeds the allowed limit of ${limit} units.`);
+            return false;
+        }
+        setError(null);
+        return true;
+    };
 
     const handleDispense = () => {
         const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
@@ -34,9 +56,22 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
         setGuardResult(result);
 
         if (result.allowed) {
+            if (!validate('DISPENSE', qty, result.cap_limit)) return;
             onAdd('DISPENSE', qty, batchId);
             setQty(0);
         }
+    };
+
+    const handleReceive = () => {
+        if (!validate('RECEIVE', qty)) return;
+        onAdd('RECEIVE', qty, batchId);
+        setQty(0);
+    };
+
+    const handleAdjust = () => {
+        if (!validate('ADJUST', qty)) return;
+        onAdd('ADJUST', qty, batchId);
+        setQty(0);
     };
 
     return (
@@ -75,6 +110,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                 </div>
             )}
 
+            {error && (
+                <div style={{ padding: '0.5rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '4px', marginBottom: '1rem', border: '1px solid #f87171' }}>
+                    <strong>🚫 Validation Error</strong>
+                    <p style={{ margin: 0, fontSize: '0.9rem' }}>{error}</p>
+                </div>
+            )}
+
             <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                 <label>
                     Batch ID:
@@ -89,7 +131,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                     <input
                         type="number"
                         value={qty}
-                        onChange={e => setQty(Number(e.target.value))}
+                        onChange={e => {
+                            setQty(Number(e.target.value));
+                            setError(null);
+                        }}
                         style={{ marginLeft: '5px', width: '80px' }}
                     />
                 </label>
@@ -103,13 +148,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                     Dispense ( - )
                 </button>
                 <button
-                    onClick={() => { onAdd('RECEIVE', qty, batchId); setQty(0); }}
+                    onClick={handleReceive}
                     style={{ backgroundColor: '#ccffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Receive ( + )
                 </button>
                 <button
-                    onClick={() => { onAdd('ADJUST', qty, batchId); setQty(0); }}
+                    onClick={handleAdjust}
                     style={{ backgroundColor: '#ffffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Adjust ( +/- )
