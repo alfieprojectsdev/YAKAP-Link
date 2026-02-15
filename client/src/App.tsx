@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import './App.css';
 import { useInventory } from './hooks/useInventory';
 import { TransactionForm } from './components/TransactionForm';
@@ -6,6 +6,11 @@ import { TransactionForm } from './components/TransactionForm';
 function App() {
   const [selectedSku, setSelectedSku] = useState<string>('MED-AMOX-500');
   const { currentStock, transactions, addTransaction } = useInventory(selectedSku);
+
+  // Memoize reversed transactions to avoid expensive O(N) sorting in every render
+  const sortedTransactions = useMemo(() => {
+    return [...transactions].reverse();
+  }, [transactions]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
@@ -51,7 +56,7 @@ function App() {
               <p style={{ color: '#999', fontStyle: 'italic' }}>No transactions recorded.</p>
             ) : (
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {transactions.slice().reverse().map(tx => (
+                {sortedTransactions.map(tx => (
                   <li key={tx.id} style={{
                     padding: '0.75rem',
                     borderBottom: '1px solid #e5e7eb',
