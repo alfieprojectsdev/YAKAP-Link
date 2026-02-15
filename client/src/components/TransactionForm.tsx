@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, type FC } from 'react';
 import { checkDispensingEligibility, type LocalSettings, type GuardResult } from '../utils/dispensingGuard';
 import { type PatientDocType } from '../db/schema';
 
@@ -19,7 +19,7 @@ interface TransactionFormProps {
     sku: string;
 }
 
-export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) => {
+export const TransactionForm: FC<TransactionFormProps> = ({ onAdd, sku }) => {
     const [qty, setQty] = useState<number>(0);
     const [batchId, setBatchId] = useState<string>('BATCH-001');
     const [selectedPatientId, setSelectedPatientId] = useState<string>('P1');
