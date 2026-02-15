@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './App.css';
 import { useInventory } from './hooks/useInventory';
 import { TransactionForm } from './components/TransactionForm';
 
