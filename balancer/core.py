@@ -2,6 +2,9 @@ import datetime
 from typing import List, Dict, Any, Optional
 import uuid
 
+CRITICAL_LOW_DAYS = 15
+BASE_OVERSTOCK_DAYS = 90
+
 # --- Data Structures ---
 
 class InventoryItem:
@@ -37,7 +40,7 @@ def calculate_bmi(item: InventoryItem) -> float:
         return 9999.0 # Effectively infinite stock if no burn
     return item.current_stock / item.daily_burn_rate
 
-def calculate_dynamic_threshold(expiry_date: datetime.date, current_date: datetime.date, base_threshold_days: int = 90) -> float:
+def calculate_dynamic_threshold(expiry_date: datetime.date, current_date: datetime.date, base_threshold_days: int = BASE_OVERSTOCK_DAYS) -> float:
     """
     Calculates the dynamic overstock threshold based on expiry pressure.
     Formula: Threshold_dynamic = Threshold_base * (Months_to_Expiry / 12)
@@ -65,14 +68,11 @@ def detect_imbalances(clinics: List[Clinic], current_date: datetime.date) -> Lis
     shortages: Dict[str, List[Dict]] = {} 
     surpluses: Dict[str, List[Dict]] = {}
     
-    CRITICAL_LOW_DAYS = 15
-    BASE_OVERSTOCK_DAYS = 90
-    
     # 1. Identify Imbalances
     for clinic in clinics:
         for item in clinic.inventory:
             doi = calculate_bmi(item)
-            dynamic_threshold = calculate_dynamic_threshold(item.expiry_date, current_date, BASE_OVERSTOCK_DAYS)
+            dynamic_threshold = calculate_dynamic_threshold(item.expiry_date, current_date)
             
             # Check for Shortage
             if doi < CRITICAL_LOW_DAYS:
