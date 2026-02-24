@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { checkDispensingEligibility, type LocalSettings, type GuardResult } from '../utils/dispensingGuard';
-import { type PatientDocType } from '../db/schema';
-
-// Mock Patient Data (Since we don't have a patient picker UI yet)
-const MOCK_PATIENTS: (PatientDocType & { last_sync_date: string })[] = [
-    { id: 'P1', name: 'Juan Dela Cruz', municipality: 'Tabuk', last_sync_date: new Date().toISOString() },
-    { id: 'P2', name: 'Maria Clara', municipality: 'Lubuagan', last_sync_date: new Date().toISOString() }, // Visitor
-    { id: 'P3', name: 'Jose Rizal', municipality: 'Tabuk', last_sync_date: '2023-01-01T00:00:00Z' } // Stale
-];
+import { usePatients } from '../hooks/usePatients';
 
 const LOCAL_SETTINGS: LocalSettings = {
     municipality: 'Tabuk',
@@ -20,13 +13,14 @@ interface TransactionFormProps {
 }
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) => {
+    const { patients } = usePatients();
     const [qty, setQty] = useState<number>(0);
     const [batchId, setBatchId] = useState<string>('BATCH-001');
     const [selectedPatientId, setSelectedPatientId] = useState<string>('P1');
     const [guardResult, setGuardResult] = useState<GuardResult | null>(null);
 
     const handleDispense = () => {
-        const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
+        const patient = patients.find(p => p.id === selectedPatientId);
         if (!patient) return;
 
         // Run Protocol-20k Check
@@ -44,15 +38,16 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
             <h3>Actions for {sku}</h3>
 
             <div style={{ marginBottom: '1rem', padding: '0.5rem', backgroundColor: '#f0f9ff', borderRadius: '4px' }}>
-                <label style={{ display: 'block', fontWeight: 'bold' }}>Select Patient (Mock):</label>
+                <label style={{ display: 'block', fontWeight: 'bold' }}>Select Patient:</label>
                 <select
                     value={selectedPatientId}
                     onChange={e => { setSelectedPatientId(e.target.value); setGuardResult(null); }}
                     style={{ width: '100%', padding: '0.5rem' }}
                 >
-                    {MOCK_PATIENTS.map(p => (
+                    {patients.length === 0 && <option value="">Loading patients...</option>}
+                    {patients.map(p => (
                         <option key={p.id} value={p.id}>
-                            {p.name} ({p.municipality}) - {new Date(p.last_sync_date).toLocaleDateString()}
+                            {p.name} ({p.municipality}) - {p.last_sync_date ? new Date(p.last_sync_date).toLocaleDateString() : 'No Sync Date'}
                         </option>
                     ))}
                 </select>
