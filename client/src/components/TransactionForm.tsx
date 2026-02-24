@@ -24,8 +24,15 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
     const [batchId, setBatchId] = useState<string>('BATCH-001');
     const [selectedPatientId, setSelectedPatientId] = useState<string>('P1');
     const [guardResult, setGuardResult] = useState<GuardResult | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const handleDispense = () => {
+        setError(null);
+        if (isNaN(qty) || qty <= 0) {
+            setError('Quantity must be positive for dispensing.');
+            return;
+        }
+
         const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
         if (!patient) return;
 
@@ -39,6 +46,26 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
         }
     };
 
+    const handleReceive = () => {
+        setError(null);
+        if (isNaN(qty) || qty <= 0) {
+            setError('Quantity must be positive for receiving.');
+            return;
+        }
+        onAdd('RECEIVE', qty, batchId);
+        setQty(0);
+    };
+
+    const handleAdjust = () => {
+        setError(null);
+        if (isNaN(qty) || qty === 0) {
+            setError('Quantity cannot be zero.');
+            return;
+        }
+        onAdd('ADJUST', qty, batchId);
+        setQty(0);
+    };
+
     return (
         <div style={{ border: '1px solid #ccc', padding: '1rem', marginTop: '1rem', borderRadius: '8px' }}>
             <h3>Actions for {sku}</h3>
@@ -47,7 +74,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                 <label style={{ display: 'block', fontWeight: 'bold' }}>Select Patient (Mock):</label>
                 <select
                     value={selectedPatientId}
-                    onChange={e => { setSelectedPatientId(e.target.value); setGuardResult(null); }}
+                    onChange={e => { setSelectedPatientId(e.target.value); setGuardResult(null); setError(null); }}
                     style={{ width: '100%', padding: '0.5rem' }}
                 >
                     {MOCK_PATIENTS.map(p => (
@@ -60,6 +87,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                     Context: Offline Mode. Home: Tabuk.
                 </div>
             </div>
+
+            {error && (
+                <div style={{ padding: '0.5rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '4px', marginBottom: '1rem', border: '1px solid #f87171' }}>
+                    <strong>⚠️ Validation Error</strong>
+                    <p style={{ margin: 0, fontSize: '0.9rem' }}>{error}</p>
+                </div>
+            )}
 
             {guardResult && !guardResult.allowed && (
                 <div style={{ padding: '0.5rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '4px', marginBottom: '1rem', border: '1px solid #f87171' }}>
@@ -89,7 +123,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                     <input
                         type="number"
                         value={qty}
-                        onChange={e => setQty(Number(e.target.value))}
+                        onChange={e => { setQty(Number(e.target.value)); setError(null); }}
                         style={{ marginLeft: '5px', width: '80px' }}
                     />
                 </label>
@@ -103,13 +137,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                     Dispense ( - )
                 </button>
                 <button
-                    onClick={() => { onAdd('RECEIVE', qty, batchId); setQty(0); }}
+                    onClick={handleReceive}
                     style={{ backgroundColor: '#ccffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Receive ( + )
                 </button>
                 <button
-                    onClick={() => { onAdd('ADJUST', qty, batchId); setQty(0); }}
+                    onClick={handleAdjust}
                     style={{ backgroundColor: '#ffffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Adjust ( +/- )
