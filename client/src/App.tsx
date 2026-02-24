@@ -51,7 +51,7 @@ function App() {
               <p style={{ color: '#999', fontStyle: 'italic' }}>No transactions recorded.</p>
             ) : (
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {transactions.slice().reverse().map(tx => (
+                {transactions.map(tx => (
                   <li key={tx.id} style={{
                     padding: '0.75rem',
                     borderBottom: '1px solid #e5e7eb',

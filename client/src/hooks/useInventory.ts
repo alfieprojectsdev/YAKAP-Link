@@ -20,7 +20,7 @@ export function useInventory(sku: string | null) {
             selector: {
                 sku: { $eq: sku }
             },
-            sort: [{ timestamp: 'asc' }] // Replay in order
+            sort: [{ timestamp: 'desc' }] // Show latest first
         });
 
         const subscription = query.$.subscribe(docs => {
