@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { checkDispensingEligibility, type LocalSettings, type GuardResult } from '../utils/dispensingGuard';
 import { type PatientDocType } from '../db/schema';
+import { TRANSACTION_TYPES, type TransactionType } from '../constants';
 
 // Mock Patient Data (Since we don't have a patient picker UI yet)
 const MOCK_PATIENTS: (PatientDocType & { last_sync_date: string })[] = [
@@ -15,7 +16,7 @@ const LOCAL_SETTINGS: LocalSettings = {
 };
 
 interface TransactionFormProps {
-    onAdd: (type: 'DISPENSE' | 'RECEIVE' | 'ADJUST', qty: number, batchId: string) => void;
+    onAdd: (type: TransactionType, qty: number, batchId: string) => void;
     sku: string;
 }
 
@@ -34,7 +35,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
         setGuardResult(result);
 
         if (result.allowed) {
-            onAdd('DISPENSE', qty, batchId);
+            onAdd(TRANSACTION_TYPES.DISPENSE, qty, batchId);
             setQty(0);
         }
     };
@@ -103,13 +104,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                     Dispense ( - )
                 </button>
                 <button
-                    onClick={() => { onAdd('RECEIVE', qty, batchId); setQty(0); }}
+                    onClick={() => { onAdd(TRANSACTION_TYPES.RECEIVE, qty, batchId); setQty(0); }}
                     style={{ backgroundColor: '#ccffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Receive ( + )
                 </button>
                 <button
-                    onClick={() => { onAdd('ADJUST', qty, batchId); setQty(0); }}
+                    onClick={() => { onAdd(TRANSACTION_TYPES.ADJUST, qty, batchId); setQty(0); }}
                     style={{ backgroundColor: '#ffffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Adjust ( +/- )

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getDatabase, type MyDatabase } from '../db/database';
 import { type TransactionDocType } from '../db/schema';
+import { TRANSACTION_TYPES, type TransactionType } from '../constants';
 
 export function useInventory(sku: string | null) {
     const [currentStock, setCurrentStock] = useState<number>(0);
@@ -43,13 +44,13 @@ export function useInventory(sku: string | null) {
         return () => subscription.unsubscribe();
     }, [db, sku]);
 
-    const addTransaction = async (type: 'DISPENSE' | 'RECEIVE' | 'ADJUST', qty: number, batch_id: string) => {
+    const addTransaction = async (type: TransactionType, qty: number, batch_id: string) => {
         if (!db || !sku) return;
 
         // Ensure negative for Dispense if user passes positive
         let finalQty = qty;
-        if (type === 'DISPENSE' && qty > 0) finalQty = -qty;
-        if (type === 'RECEIVE' && qty < 0) finalQty = -qty; // Receive should be positive
+        if (type === TRANSACTION_TYPES.DISPENSE && qty > 0) finalQty = -qty;
+        if (type === TRANSACTION_TYPES.RECEIVE && qty < 0) finalQty = -qty; // Receive should be positive
 
         await db.transactions.insert({
             id: crypto.randomUUID(),
