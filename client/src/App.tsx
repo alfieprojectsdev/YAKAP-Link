@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './App.css';
 import { useInventory } from './hooks/useInventory';
 import { TransactionForm } from './components/TransactionForm';
+import { LOW_STOCK_THRESHOLD } from './constants';
 
 function App() {
   const [selectedSku, setSelectedSku] = useState<string>('MED-AMOX-500');
@@ -29,12 +30,12 @@ function App() {
           </select>
 
           <div style={{
-            backgroundColor: currentStock < 100 ? '#fff0f0' : '#f0fff4',
+            backgroundColor: currentStock < LOW_STOCK_THRESHOLD ? '#fff0f0' : '#f0fff4',
             padding: '2rem',
             borderRadius: '12px',
             textAlign: 'center',
             border: '1px solid',
-            borderColor: currentStock < 100 ? '#ffcccc' : '#bbf7d0'
+            borderColor: currentStock < LOW_STOCK_THRESHOLD ? '#ffcccc' : '#bbf7d0'
           }}>
             <h2 style={{ margin: 0, fontSize: '4rem', fontWeight: '900' }}>{currentStock}</h2>
             <p style={{ margin: 0, color: '#666', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.8rem' }}>Current Stock</p>
