@@ -6,7 +6,7 @@ import {
 
 // --- Transaction Event (Write Model) ---
 export const TRANSACTION_SCHEMA_LITERAL = {
-    version: 0,
+    version: 1,
     primaryKey: 'id',
     type: 'object',
     properties: {
@@ -45,7 +45,8 @@ export const TRANSACTION_SCHEMA_LITERAL = {
             maxLength: 64
         }
     },
-    required: ['id', 'type', 'sku', 'qty', 'timestamp', 'sync_status']
+    required: ['id', 'type', 'sku', 'qty', 'timestamp', 'sync_status'],
+    indexes: [['sku', 'timestamp']]
 } as const;
 
 const schemaTypedTransaction = toTypedRxJsonSchema(TRANSACTION_SCHEMA_LITERAL);

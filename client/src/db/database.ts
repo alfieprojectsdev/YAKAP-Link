@@ -42,7 +42,10 @@ const createDatabase = async (): Promise<MyDatabase> => {
 
     await db.addCollections({
         transactions: {
-            schema: TransactionSchema
+            schema: TransactionSchema,
+            migrationStrategies: {
+                1: (oldDoc) => oldDoc
+            }
         },
         inventory: {
             schema: InventorySchema
