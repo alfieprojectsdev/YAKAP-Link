@@ -1,6 +1,21 @@
 import pytest
 import datetime
-from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold
+from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold, calculate_doi
+
+def test_calculate_doi():
+    today = datetime.date(2025, 1, 1)
+
+    # Standard item
+    item = InventoryItem("SKU1", "B1", 100, today, 10.0)
+    assert calculate_doi(item) == 10.0
+
+    # Zero burn rate (Infinite DOI)
+    item_no_burn = InventoryItem("SKU2", "B2", 100, today, 0.0)
+    assert calculate_doi(item_no_burn) == 9999.0
+
+    # Negative burn rate (Infinite DOI)
+    item_neg_burn = InventoryItem("SKU3", "B3", 100, today, -5.0)
+    assert calculate_doi(item_neg_burn) == 9999.0
 
 def test_dynamic_threshold():
     today = datetime.date(2025, 1, 1)
