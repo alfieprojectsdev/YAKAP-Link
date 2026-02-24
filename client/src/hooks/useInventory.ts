@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { type RxDocument } from 'rxdb';
 import { getDatabase, type MyDatabase } from '../db/database';
 import { type TransactionDocType } from '../db/schema';
 
 export function useInventory(sku: string | null) {
     const [currentStock, setCurrentStock] = useState<number>(0);
-    const [transactions, setTransactions] = useState<TransactionDocType[]>([]);
+    const [transactions, setTransactions] = useState<RxDocument<TransactionDocType>[]>([]);
     const [db, setDb] = useState<MyDatabase | null>(null);
 
     useEffect(() => {
@@ -24,11 +25,13 @@ export function useInventory(sku: string | null) {
         });
 
         const subscription = query.$.subscribe(docs => {
-            const txs = docs.map(d => d.toJSON());
-            setTransactions(txs);
+            // Optimization: Use RxDocument objects directly instead of .toJSON()
+            // RxDocument properties are getters, so accessing them is fast.
+            // This avoids creating new objects for every document on every update.
+            setTransactions(docs);
 
             // Reduce Logic: Calculate Stock
-            const total = txs.reduce((acc, tx) => {
+            const total = docs.reduce((acc, tx) => {
                 // If it's a dispense, qty is likely negative or we handle logic here.
                 // Requirement says: "Dispense | Receive | Adjust".
                 // Let's assume the 'qty' field in the event is the delta.
