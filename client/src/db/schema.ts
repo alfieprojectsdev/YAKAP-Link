@@ -6,9 +6,10 @@ import {
 
 // --- Transaction Event (Write Model) ---
 export const TRANSACTION_SCHEMA_LITERAL = {
-    version: 0,
+    version: 1,
     primaryKey: 'id',
     type: 'object',
+    indexes: [['sku', 'timestamp']],
     properties: {
         id: {
             type: 'string',
@@ -48,7 +49,7 @@ export const TRANSACTION_SCHEMA_LITERAL = {
     required: ['id', 'type', 'sku', 'qty', 'timestamp', 'sync_status']
 } as const;
 
-const schemaTypedTransaction = toTypedRxJsonSchema(TRANSACTION_SCHEMA_LITERAL);
+export const schemaTypedTransaction = toTypedRxJsonSchema(TRANSACTION_SCHEMA_LITERAL);
 export type TransactionDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedTransaction>;
 
 export const TransactionSchema: RxJsonSchema<TransactionDocType> = TRANSACTION_SCHEMA_LITERAL;
@@ -79,7 +80,7 @@ export const INVENTORY_SCHEMA_LITERAL = {
     required: ['sku', 'batch_id', 'current_stock']
 } as const;
 
-const schemaTypedInventory = toTypedRxJsonSchema(INVENTORY_SCHEMA_LITERAL);
+export const schemaTypedInventory = toTypedRxJsonSchema(INVENTORY_SCHEMA_LITERAL);
 export type InventoryDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedInventory>;
 
 export const InventorySchema: RxJsonSchema<InventoryDocType> = INVENTORY_SCHEMA_LITERAL;
@@ -110,7 +111,7 @@ export const PATIENT_SCHEMA_LITERAL = {
     required: ['id', 'name', 'municipality']
 } as const;
 
-const schemaTypedPatient = toTypedRxJsonSchema(PATIENT_SCHEMA_LITERAL);
+export const schemaTypedPatient = toTypedRxJsonSchema(PATIENT_SCHEMA_LITERAL);
 export type PatientDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTypedPatient>;
 
 export const PatientSchema: RxJsonSchema<PatientDocType> = PATIENT_SCHEMA_LITERAL;
