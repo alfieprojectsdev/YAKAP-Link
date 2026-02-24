@@ -2,6 +2,9 @@ import datetime
 from typing import List, Dict, Any, Optional
 import uuid
 
+# --- Constants ---
+INFINITE_DOI = 9999.0
+
 # --- Data Structures ---
 
 class InventoryItem:
@@ -34,7 +37,7 @@ class TransferOrder:
 def calculate_bmi(item: InventoryItem) -> float:
     """Calculates Days of Inventory (DOI)"""
     if item.daily_burn_rate <= 0:
-        return 9999.0 # Effectively infinite stock if no burn
+        return INFINITE_DOI # Effectively infinite stock if no burn
     return item.current_stock / item.daily_burn_rate
 
 def calculate_dynamic_threshold(expiry_date: datetime.date, current_date: datetime.date, base_threshold_days: int = 90) -> float:
@@ -90,7 +93,7 @@ def detect_imbalances(clinics: List[Clinic], current_date: datetime.date) -> Lis
             # We treat stock as surplus if DOI > Dynamic Threshold
             # AND the actual days to consume locally > Days to expiry (Guaranteed Waste)
             
-            days_to_consume_locally = item.current_stock / item.daily_burn_rate if item.daily_burn_rate > 0 else 9999
+            days_to_consume_locally = item.current_stock / item.daily_burn_rate if item.daily_burn_rate > 0 else INFINITE_DOI
             days_to_expiry = (item.expiry_date - current_date).days
             
             is_overstock = doi > dynamic_threshold
