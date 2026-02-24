@@ -6,6 +6,17 @@ import uuid
 
 class InventoryItem:
     def __init__(self, sku: str, batch_id: str, current_stock: int, expiry_date: datetime.date, daily_burn_rate: float):
+        if not sku or not isinstance(sku, str):
+            raise ValueError("SKU must be a non-empty string.")
+        if not batch_id or not isinstance(batch_id, str):
+            raise ValueError("Batch ID must be a non-empty string.")
+        if not isinstance(current_stock, int) or current_stock < 0:
+            raise ValueError("Current stock must be a non-negative integer.")
+        if not isinstance(expiry_date, datetime.date):
+            raise TypeError("Expiry date must be a datetime.date object.")
+        if not isinstance(daily_burn_rate, (int, float)) or daily_burn_rate < 0:
+            raise ValueError("Daily burn rate must be a non-negative number.")
+
         self.sku = sku
         self.batch_id = batch_id
         self.current_stock = current_stock
