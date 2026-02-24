@@ -41,10 +41,9 @@ export function checkDispensingEligibility(
 
     // 2. Staleness Cap
     if (isOffline && patient.last_sync_date) {
-        const lastSync = new Date(patient.last_sync_date).getTime();
-        const now = new Date().getTime();
+        const isStale = (Date.now() - Date.parse(patient.last_sync_date)) > HOURS_72;
 
-        if ((now - lastSync) > HOURS_72) {
+        if (isStale) {
             return {
                 allowed: true, // Allowed, but restricted
                 reason: `Offline > 72h. Emergency Buffer Only (${DAY_7_SUPPLY_LIMIT} days). Facility assumes liability for excess.`,
