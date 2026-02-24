@@ -31,7 +31,7 @@ class TransferOrder:
 
 # --- Core Logic ---
 
-def calculate_bmi(item: InventoryItem) -> float:
+def calculate_doi(item: InventoryItem) -> float:
     """Calculates Days of Inventory (DOI)"""
     if item.daily_burn_rate <= 0:
         return 9999.0 # Effectively infinite stock if no burn
@@ -71,7 +71,7 @@ def detect_imbalances(clinics: List[Clinic], current_date: datetime.date) -> Lis
     # 1. Identify Imbalances
     for clinic in clinics:
         for item in clinic.inventory:
-            doi = calculate_bmi(item)
+            doi = calculate_doi(item)
             dynamic_threshold = calculate_dynamic_threshold(item.expiry_date, current_date, BASE_OVERSTOCK_DAYS)
             
             # Check for Shortage
