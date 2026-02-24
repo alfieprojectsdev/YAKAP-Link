@@ -1,6 +1,17 @@
 import pytest
 import datetime
-from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold
+from core import InventoryItem, Clinic, detect_imbalances, TransferOrder, calculate_dynamic_threshold, calculate_bmi
+
+@pytest.mark.parametrize("stock, burn, expected", [
+    (100, 2.0, 50.0),    # Standard case
+    (100, 0.0, 9999.0),   # Zero burn
+    (100, -1.0, 9999.0),  # Negative burn
+    (0, 5.0, 0.0),       # Zero stock
+    (10, 0.5, 20.0),     # Floating point burn
+])
+def test_calculate_bmi(stock, burn, expected):
+    item = InventoryItem("SKU1", "B1", stock, datetime.date(2025, 12, 31), burn)
+    assert calculate_bmi(item) == expected
 
 def test_dynamic_threshold():
     today = datetime.date(2025, 1, 1)
