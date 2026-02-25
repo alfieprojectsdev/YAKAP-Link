@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { checkDispensingEligibility, type LocalSettings, type GuardResult } from '../utils/dispensingGuard';
-import { type PatientDocType } from '../db/schema';
-
-// Mock Patient Data (Since we don't have a patient picker UI yet)
-const MOCK_PATIENTS: (PatientDocType & { last_sync_date: string })[] = [
-    { id: 'P1', name: 'Juan Dela Cruz', municipality: 'Tabuk', last_sync_date: new Date().toISOString() },
-    { id: 'P2', name: 'Maria Clara', municipality: 'Lubuagan', last_sync_date: new Date().toISOString() }, // Visitor
-    { id: 'P3', name: 'Jose Rizal', municipality: 'Tabuk', last_sync_date: '2023-01-01T00:00:00Z' } // Stale
-];
+import { MOCK_PATIENTS, PATIENTS_MAP } from '../mocks/patients';
 
 const LOCAL_SETTINGS: LocalSettings = {
     municipality: 'Tabuk',
@@ -26,7 +19,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
     const [guardResult, setGuardResult] = useState<GuardResult | null>(null);
 
     const handleDispense = () => {
-        const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
+        const patient = PATIENTS_MAP.get(selectedPatientId);
         if (!patient) return;
 
         // Run Protocol-20k Check
