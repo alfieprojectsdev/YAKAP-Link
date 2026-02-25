@@ -6,7 +6,7 @@ import {
 
 // --- Transaction Event (Write Model) ---
 export const TRANSACTION_SCHEMA_LITERAL = {
-    version: 0,
+    version: 1,
     primaryKey: 'id',
     type: 'object',
     properties: {
@@ -28,7 +28,10 @@ export const TRANSACTION_SCHEMA_LITERAL = {
             maxLength: 50
         },
         qty: {
-            type: 'number'
+            type: 'number',
+            minimum: -1000000,
+            maximum: 1000000,
+            multipleOf: 1
         },
         timestamp: {
             type: 'string',

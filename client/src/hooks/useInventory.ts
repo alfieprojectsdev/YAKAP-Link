@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getDatabase, type MyDatabase } from '../db/database';
 import { type TransactionDocType } from '../db/schema';
+import { validateTransaction } from '../utils/validation';
 
 export function useInventory(sku: string | null) {
     const [currentStock, setCurrentStock] = useState<number>(0);
@@ -50,6 +51,13 @@ export function useInventory(sku: string | null) {
         let finalQty = qty;
         if (type === 'DISPENSE' && qty > 0) finalQty = -qty;
         if (type === 'RECEIVE' && qty < 0) finalQty = -qty; // Receive should be positive
+
+        // Validation
+        const error = validateTransaction(finalQty, batch_id);
+        if (error) {
+            console.error(`Transaction validation failed: ${error}`);
+            throw new Error(error);
+        }
 
         await db.transactions.insert({
             id: crypto.randomUUID(),

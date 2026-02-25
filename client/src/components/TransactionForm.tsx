@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { checkDispensingEligibility, type LocalSettings, type GuardResult } from '../utils/dispensingGuard';
 import { type PatientDocType } from '../db/schema';
+import { validateTransaction } from '../utils/validation';
 
 // Mock Patient Data (Since we don't have a patient picker UI yet)
 const MOCK_PATIENTS: (PatientDocType & { last_sync_date: string })[] = [
@@ -25,16 +26,36 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
     const [selectedPatientId, setSelectedPatientId] = useState<string>('P1');
     const [guardResult, setGuardResult] = useState<GuardResult | null>(null);
 
-    const handleDispense = () => {
-        const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
-        if (!patient) return;
+    const [validationError, setValidationError] = useState<string | null>(null);
 
-        // Run Protocol-20k Check
-        const result = checkDispensingEligibility(patient, LOCAL_SETTINGS);
-        setGuardResult(result);
+    const handleAction = (type: 'DISPENSE' | 'RECEIVE' | 'ADJUST') => {
+        setValidationError(null);
 
-        if (result.allowed) {
-            onAdd('DISPENSE', qty, batchId);
+        // Normalize quantity for validation check (similar to how useInventory does it)
+        let finalQty = qty;
+        if (type === 'DISPENSE' && qty > 0) finalQty = -qty;
+        if (type === 'RECEIVE' && qty < 0) finalQty = -qty;
+
+        const error = validateTransaction(finalQty, batchId);
+        if (error) {
+            setValidationError(error);
+            return;
+        }
+
+        if (type === 'DISPENSE') {
+            const patient = MOCK_PATIENTS.find(p => p.id === selectedPatientId);
+            if (!patient) return;
+
+            // Run Protocol-20k Check
+            const result = checkDispensingEligibility(patient, LOCAL_SETTINGS);
+            setGuardResult(result);
+
+            if (result.allowed) {
+                onAdd('DISPENSE', qty, batchId);
+                setQty(0);
+            }
+        } else {
+            onAdd(type, qty, batchId);
             setQty(0);
         }
     };
@@ -95,21 +116,27 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onAdd, sku }) 
                 </label>
             </div>
 
+            {validationError && (
+                <div style={{ padding: '0.5rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '4px', marginBottom: '1rem', border: '1px solid #f87171' }}>
+                    <strong>Validation Error:</strong> {validationError}
+                </div>
+            )}
+
             <div style={{ display: 'flex', gap: '10px' }}>
                 <button
-                    onClick={handleDispense}
+                    onClick={() => handleAction('DISPENSE')}
                     style={{ backgroundColor: '#ffcccc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Dispense ( - )
                 </button>
                 <button
-                    onClick={() => { onAdd('RECEIVE', qty, batchId); setQty(0); }}
+                    onClick={() => handleAction('RECEIVE')}
                     style={{ backgroundColor: '#ccffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Receive ( + )
                 </button>
                 <button
-                    onClick={() => { onAdd('ADJUST', qty, batchId); setQty(0); }}
+                    onClick={() => handleAction('ADJUST')}
                     style={{ backgroundColor: '#ffffcc', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Adjust ( +/- )
