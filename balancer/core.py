@@ -1,5 +1,4 @@
 import datetime
-from typing import List, Dict, Any, Optional
 import uuid
 
 # --- Data Structures ---
@@ -13,7 +12,7 @@ class InventoryItem:
         self.daily_burn_rate = daily_burn_rate
 
 class Clinic:
-    def __init__(self, id: str, name: str, location: tuple, inventory: List[InventoryItem]):
+    def __init__(self, id: str, name: str, location: tuple, inventory: list[InventoryItem]):
         self.id = id
         self.name = name
         self.location = location # (lat, lon)
@@ -54,7 +53,7 @@ def calculate_dynamic_threshold(expiry_date: datetime.date, current_date: dateti
     threshold = base_threshold_days * (months_to_expiry / 12.0)
     return max(0.0, threshold)
 
-def detect_imbalances(clinics: List[Clinic], current_date: datetime.date) -> List[TransferOrder]:
+def detect_imbalances(clinics: list[Clinic], current_date: datetime.date) -> list[TransferOrder]:
     """
     Analyzes all clinics and generates transfer orders to balance stock.
     """
@@ -62,8 +61,8 @@ def detect_imbalances(clinics: List[Clinic], current_date: datetime.date) -> Lis
     
     # Simple registry of shortages and surpluses
     # Key: SKU
-    shortages: Dict[str, List[Dict]] = {} 
-    surpluses: Dict[str, List[Dict]] = {}
+    shortages: dict[str, list[dict]] = {}
+    surpluses: dict[str, list[dict]] = {}
     
     CRITICAL_LOW_DAYS = 15
     BASE_OVERSTOCK_DAYS = 90
