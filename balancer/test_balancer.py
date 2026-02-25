@@ -17,6 +17,19 @@ def test_dynamic_threshold():
     # Expected: 90 * (3/12) = 22.5
     assert abs(thresh_near - 22.5) < 5
 
+def test_dynamic_threshold_expired():
+    today = datetime.date(2025, 1, 1)
+
+    # Expired exactly today
+    exp_today = today
+    thresh_today = calculate_dynamic_threshold(exp_today, today, 90)
+    assert thresh_today == 0.0
+
+    # Expired in the past
+    exp_past = datetime.date(2024, 12, 1)
+    thresh_past = calculate_dynamic_threshold(exp_past, today, 90)
+    assert thresh_past == 0.0
+
 def test_balancer_simple_transfer():
     today = datetime.date(2025, 1, 1)
     far_future = datetime.date(2026, 1, 1)
