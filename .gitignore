@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+
+# Third-party reference documents: kept locally, linked from docs/field-notes.md
+docs/JSI_LogisticHandbook_English_2019_combined_web.pdf
+docs/references/
