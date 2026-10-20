@@ -44,13 +44,16 @@ may change what this project should be.
 - `balancer/` — Python: `core.py` (InventoryItem, Clinic, TransferOrder,
   DOI, dynamic threshold, `detect_imbalances`), `test_balancer.py` (pytest).
   Note `calculate_bmi` actually computes Days of Inventory; the name is a
-  leftover.
+  leftover (rename tracked in #44, with two bugs in `detect_imbalances`).
 - `docs/field-notes.md` — what people near RHUs have said; open questions.
 - `docs/handbook-notes.md` — 16 points from the JSI supply chain handbook
   (chapters 3, 7, 10), each with what it means here, plus questions for the
   field. Start there before redesigning: it argues for mapping the current
   flow first, the three essential data items, counting at delivery, and
   keeping supply data apart from patient data.
+- `docs/prior-art-field-ops.md` — how the offline logsheets PWA in the
+  `movefaults` repo syncs (client-uuid outbox, idempotent batch POST) and
+  what it learned the hard way. Read before designing Phase 2 sync.
 - `docs/PC2025-0013.pdf` — PhilHealth circular, tracked.
 - `docs/JSI_LogisticHandbook_English_2019_combined_web.pdf` — JSI's supply
   chain managers' handbook, local copy only (gitignored: third-party PDF,
@@ -67,21 +70,23 @@ may change what this project should be.
 - Patients are PhilHealth members; their records are health information,
   which RA 10173 (Data Privacy Act) treats as sensitive personal
   information. Never commit real patient, facility-staff or member data.
-  Mock data only, clearly fake. Several automated branches were about
-  hardcoded PII (`fix-pii-hardcoded-transactionform-*`,
-  `security-fix-hardcoded-pii-*`); check what's on main before reusing
-  any fixture.
+  Mock data only, clearly fake. The mock patients in `TransactionForm.tsx`
+  are a placeholder name, a fictional character and a historical figure;
+  neutral labels ("Patient A") would be safer if they're kept.
 - Field contacts stay anonymous in this public repo ("an M&E contact at a
   family-planning NGO") unless they've agreed to be named. Ask first.
 
 ## Repo housekeeping
 
-- About 45 remote branches with numeric suffixes (e.g.
-  `perf-optimize-patient-lookup-12732687809793433204`) came from an automated
-  code-improvement agent and were never merged. Untriaged: many overlap
-  (several "extract balancer constants", "remove 9999 magic number",
-  "transaction validation"). Review against the restarted direction before
-  merging any; most may be moot.
+- 43 PRs (#1–#43) from an automated code-improvement agent (Feb 2026) were
+  triaged on 2026-10-20 against the restart: 42 closed with a reason each,
+  branches deleted. The closed diffs are still on GitHub if one is wanted.
+  Still open: #14 (negative burn-rate fix, incomplete). Balancer bugs are in
+  issue #44, on hold until the field answers are in.
+- Carried over from the closed validation PRs (#1, #16, #31, #41) for the next
+  form: quantity is a non-zero whole number; batch ID is required, at most 50
+  characters. #39 (Vitest tests for the Protocol-20k guard) is worth reviving
+  if the guard stays.
 - Work on a branch and open a PR; review before merging.
 
 ## Writing
