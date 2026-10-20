@@ -46,6 +46,11 @@ may change what this project should be.
   Note `calculate_bmi` actually computes Days of Inventory; the name is a
   leftover.
 - `docs/field-notes.md` — what people near RHUs have said; open questions.
+- `docs/handbook-notes.md` — 16 points from the JSI supply chain handbook
+  (chapters 3, 7, 10), each with what it means here, plus questions for the
+  field. Start there before redesigning: it argues for mapping the current
+  flow first, the three essential data items, counting at delivery, and
+  keeping supply data apart from patient data.
 - `docs/PC2025-0013.pdf` — PhilHealth circular, tracked.
 - `docs/JSI_LogisticHandbook_English_2019_combined_web.pdf` — JSI's supply
   chain managers' handbook, local copy only (gitignored: third-party PDF,
