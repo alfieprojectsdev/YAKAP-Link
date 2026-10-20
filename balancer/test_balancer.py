@@ -73,3 +73,32 @@ def test_balancer_expiry_push():
             assert o.source_clinic_id == "A"
             assert o.dest_clinic_id == "B"
     assert found
+
+def test_negative_burn_rate_safety():
+    """
+    Ensures that negative burn rates do not cause invalid transfer orders
+    (e.g., transferring more than available stock due to calculation errors).
+    """
+    today = datetime.date(2025, 1, 1)
+    far_future = datetime.date(2026, 1, 1)
+
+    # Clinic A: Negative burn rate. Stock 100.
+    # Negative burn rate should be treated as 0 usage.
+    # Since stock expires in 1 year, and usage is 0, it is all surplus (if considering expiry).
+    # However, calculation logic for 'keep_qty' must not explode.
+    item_a = InventoryItem("DOXY", "B1", 100, far_future, -5.0)
+    clinic_a = Clinic("A", "Clinic A", (0,0), [item_a])
+
+    # Clinic B: Large Shortage.
+    # Burn rate 20.0. Stock 0.
+    # Needed: 30 * 20 = 600.
+    item_b = InventoryItem("DOXY", "B2", 0, far_future, 20.0)
+    clinic_b = Clinic("B", "Clinic B", (0,1), [item_b])
+
+    orders = detect_imbalances([clinic_a, clinic_b], today)
+
+    # Should generate an order, but quantity MUST NOT exceed source stock (100)
+    for order in orders:
+        if order.source_clinic_id == "A":
+            assert order.qty <= 100, f"Order quantity {order.qty} exceeds source stock 100!"
+            assert order.qty > 0

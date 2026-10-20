@@ -100,7 +100,7 @@ def detect_imbalances(clinics: List[Clinic], current_date: datetime.date) -> Lis
                  # Calculate transferable amount
                  # If expiring unused, move everything we can't use
                  if will_expire_unused:
-                      keep_qty = int(days_to_expiry * item.daily_burn_rate)
+                      keep_qty = int(max(0, days_to_expiry) * max(0, item.daily_burn_rate))
                       surplus_qty = item.current_stock - keep_qty
                       priority = "URGENT_EXPIRY"
                  else:
