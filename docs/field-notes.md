@@ -49,11 +49,24 @@ they've talked to their partnerships team in Puerto Princesa.
 2. Who usually does the encoding (nurse, midwife, admin), and how often?
 3. Which supplier systems exist, and why don't other programs adopt them?
 
+Not asked yet (added 2026-10-20, after reviewing the Balancer spec):
+
+4. Does stock move between RHUs today, for example near-expiry stock sent to
+   a neighbouring municipality? If so, who decides, how is it carried, and
+   how is it recorded? Does it differ for DOH-supplied program commodities,
+   such as family planning, and for medicines the LGU buys itself?
+
+   This would show whether redistribution already happens informally, and
+   what the README's Balancer would have to fit into. If stock bought by one
+   LGU can't easily move to another, the Balancer may only apply to program
+   commodities.
+
 Answers:
 
 1.
 2.
 3.
+4.
 
 ### Not checked yet
 
