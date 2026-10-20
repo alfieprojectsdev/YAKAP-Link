@@ -51,6 +51,9 @@ may change what this project should be.
   field. Start there before redesigning: it argues for mapping the current
   flow first, the three essential data items, counting at delivery, and
   keeping supply data apart from patient data.
+- `docs/prior-art-field-ops.md` — how the offline logsheets PWA in the
+  `movefaults` repo syncs (client-uuid outbox, idempotent batch POST) and
+  what it learned the hard way. Read before designing Phase 2 sync.
 - `docs/PC2025-0013.pdf` — PhilHealth circular, tracked.
 - `docs/JSI_LogisticHandbook_English_2019_combined_web.pdf` — JSI's supply
   chain managers' handbook, local copy only (gitignored: third-party PDF,
