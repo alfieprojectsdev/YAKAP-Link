@@ -50,8 +50,8 @@ be matched to it directly. Each question says when it was first asked.
 
 #### How stock is tracked now
 
-1. At RHUs without a system, how are stocks tracked now: paper, Excel, or not
-   at all? (2026-10-20)
+1. At RHUs without a system, how are stocks tracked now: paper, Excel or
+   Google Sheets, or not at all? (2026-10-20)
 
    Answer:
 
