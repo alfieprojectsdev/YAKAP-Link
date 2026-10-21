@@ -44,46 +44,64 @@ Hypotheses to test, not conclusions:
 The contact is taking these to their partnerships team in Puerto Princesa on
 Friday, 2026-10-23. Answers could come that weekend or early the week after.
 
-Asked on 2026-10-20:
+They were asked over two days, partly in the handbook notes, then sent again
+as one list on 2026-10-21. The numbering below is that list's, so answers can
+be matched to it directly. Each question says when it was first asked.
+
+#### How stock is tracked now
 
 1. At RHUs without a system, how are stocks tracked now: paper, Excel, or not
-   at all?
-2. Who usually does the encoding (nurse, midwife, admin), and how often?
-3. Which supplier systems exist, and why don't other programs adopt them?
+   at all? (2026-10-20)
 
-Asked on 2026-10-21, after reviewing the Balancer spec:
+   Answer:
 
-4. Does stock move between RHUs today, for example near-expiry stock sent to
+2. Which forms do RHUs keep now, if any: stock cards, registers, requisition
+   vouchers? (2026-10-21, from `docs/handbook-notes.md`)
+
+   Answer:
+
+3. Who usually does the encoding (nurse, midwife, admin), and how often?
+   (2026-10-20)
+
+   Answer:
+
+#### How stock arrives
+
+4. Who delivers commodities to RHUs, and how often? Could counts happen at
+   delivery? (2026-10-21, from `docs/handbook-notes.md`)
+
+   Answer:
+
+5. Do the family-planning programs already use a months-of-stock minimum and
+   maximum, and at what levels? (2026-10-21, from `docs/handbook-notes.md`)
+
+   Answer:
+
+6. Does any program in the province run vendor-managed inventory, where a
+   supplier or NGO keeps a facility stocked? (2026-10-21, from
+   `docs/handbook-notes.md`)
+
+   Answer:
+
+7. Which supplier systems exist, and why don't other programs adopt them?
+   (2026-10-20)
+
+   Answer:
+
+#### Moving stock between RHUs
+
+8. Does stock move between RHUs today, for example near-expiry stock sent to
    a neighbouring municipality? If so, who decides, how is it carried, and
    how is it recorded? Does it differ for DOH-supplied program commodities,
    such as family planning, and for medicines the LGU buys itself?
+   (2026-10-21, after reviewing the Balancer spec)
 
    This would show whether redistribution already happens informally, and
    what the README's Balancer would have to fit into. If stock bought by one
    LGU can't easily move to another, the Balancer may only apply to program
    commodities.
 
-Shared with the handbook notes by 2026-10-21 (from the end of
-`docs/handbook-notes.md`):
-
-5. Which paper forms (stock cards, registers, requisition vouchers) do RHUs
-   keep now, if any?
-6. Who delivers commodities to RHUs, and how often? Could counts happen at
-   delivery?
-7. Do the family-planning programs already use a months-of-stock minimum and
-   maximum, and at what levels?
-8. Does any program run vendor-managed inventory in the province?
-
-Answers:
-
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
+   Answer:
 
 ### Not checked yet
 
