@@ -15,9 +15,11 @@ may change what this project should be.
   says the bigger gaps come first: many RHUs have NO system at all, and NO ONE
   is assigned to manage the data. Supplier/program systems exist but other
   programs don't adopt them. Offline-first may be a second-order requirement.
-- Three questions are out (stock tracking today, who encodes and how often,
-  which supplier systems and why they don't spread). Answers expected after
-  the weekend of 2026-10-24/25. Record them in `docs/field-notes.md`.
+- Eight questions are out, listed in `docs/field-notes.md`: stock tracking
+  today, who encodes, supplier systems, whether stock moves between RHUs, and
+  four from the handbook notes. The contact meets their partnerships team on
+  Friday 2026-10-23; answers could come that weekend or early the week after.
+  Record them in `docs/field-notes.md`.
 - Don't build further on the offline-sync premise until those answers are in.
   Re-check the problem statement against them first.
 - Not checked yet: the README's "real-time logs" claim against the circular

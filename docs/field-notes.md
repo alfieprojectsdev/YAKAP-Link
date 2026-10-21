@@ -41,15 +41,17 @@ Hypotheses to test, not conclusions:
 
 ### Open questions
 
-Asked on 2026-10-20. Answers expected after the weekend of 24–25 October, once
-they've talked to their partnerships team in Puerto Princesa.
+The contact is taking these to their partnerships team in Puerto Princesa on
+Friday, 2026-10-23. Answers could come that weekend or early the week after.
+
+Asked on 2026-10-20:
 
 1. At RHUs without a system, how are stocks tracked now: paper, Excel, or not
    at all?
 2. Who usually does the encoding (nurse, midwife, admin), and how often?
 3. Which supplier systems exist, and why don't other programs adopt them?
 
-Not asked yet (added 2026-10-20, after reviewing the Balancer spec):
+Asked on 2026-10-21, after reviewing the Balancer spec:
 
 4. Does stock move between RHUs today, for example near-expiry stock sent to
    a neighbouring municipality? If so, who decides, how is it carried, and
@@ -61,12 +63,27 @@ Not asked yet (added 2026-10-20, after reviewing the Balancer spec):
    LGU can't easily move to another, the Balancer may only apply to program
    commodities.
 
+Shared with the handbook notes by 2026-10-21 (from the end of
+`docs/handbook-notes.md`):
+
+5. Which paper forms (stock cards, registers, requisition vouchers) do RHUs
+   keep now, if any?
+6. Who delivers commodities to RHUs, and how often? Could counts happen at
+   delivery?
+7. Do the family-planning programs already use a months-of-stock minimum and
+   maximum, and at what levels?
+8. Does any program run vendor-managed inventory in the province?
+
 Answers:
 
 1.
 2.
 3.
 4.
+5.
+6.
+7.
+8.
 
 ### Not checked yet
 
